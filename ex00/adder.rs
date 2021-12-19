@@ -1,11 +1,11 @@
 fn adder(a: u32, b: u32) -> u32 {
-    let mut added : u32 = a ^ b;
+    let mut sum : u32 = a ^ b;
     let mut current : u32 = 1;
     let mut carry : bool = false;
 
-    for _i in 1..33 {
+    for _i in 0..32 {
         if carry {
-            added = added ^ current;
+            sum = sum ^ current;
         }
 
         if (current & a & b) != 0 {
@@ -25,7 +25,7 @@ fn adder(a: u32, b: u32) -> u32 {
         panic!("attempt to add with overflow");
     }
 
-    return added;
+    return sum;
 }
 
 fn test_adder(a: u32, b: u32) {
