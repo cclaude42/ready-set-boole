@@ -43,6 +43,9 @@ fn eval_formula(formula: &str) -> bool {
                 stack.push_back(a == b);
             }
         }
+        else {
+            panic!("invalid character");
+        }
     }
 
     if stack.len() != 1 {
