@@ -163,28 +163,64 @@ impl OpNode {
             self.negify();
         }
     }
+
+    fn possible_conjuction(&mut self) -> bool {
+        if "&|".contains(self.value) {
+            if self.left.as_ref().unwrap().value == self.value {
+                if self.right.as_ref().unwrap().value.is_ascii_uppercase() {
+                    return true;
+                }
+                else if self.right.as_ref().unwrap().value == '!' && self.right.as_ref().unwrap().right.as_ref().unwrap().value.is_ascii_uppercase() {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    fn conjuctify(&mut self) {
+        match self.left.as_mut() {
+            None => (),
+            Some(left) => left.conjuctify(),
+        }
+
+        match self.right.as_mut() {
+            None => (),
+            Some(right) => right.conjuctify(),
+        }
+
+        if self.possible_conjuction() {
+            std::mem::swap(&mut self.left, &mut self.right);
+            self.conjuctify();
+        }
+    }
 }
 
-fn negation_normal_form(formula: &str) -> String {
+fn conjunctive_normal_form(formula: &str) -> String {
     let mut chars = formula.chars();
     let mut root = OpNode::new();
 
     root.parse_op(&mut chars);
 
     root.negify();
+    root.conjuctify();
 
     return root.stringify();
 }
 
 fn main() {
-    println!("{}", negation_normal_form("AB&!"));
+    println!("{}", conjunctive_normal_form("AB&!"));
     // A!B!|
-    println!("{}", negation_normal_form("AB|!"));
+    println!("{}", conjunctive_normal_form("AB|!"));
     // A!B!&
-    println!("{}", negation_normal_form("AB>"));
-    // A!B|
-    println!("{}", negation_normal_form("AB="));
-    // AB&A!B!&|
-    println!("{}", negation_normal_form("AB|C&!"));
-    // A!B!&C!|
+    println!("{}", conjunctive_normal_form("AB|C&"));
+    // AB|C&
+    println!("{}", conjunctive_normal_form("AB|C|D|"));
+    // ABCD|||
+    println!("{}", conjunctive_normal_form("AB&C&D&"));
+    // ABCD&&&
+    println!("{}", conjunctive_normal_form("AB&!C!|"));
+    // A!B!C!||
+    println!("{}", conjunctive_normal_form("AB|!C!&"));
+    // A!B!C!&&
 }
