@@ -178,6 +178,10 @@ impl OpNode {
             }
         }
 
+        if vars.len() != sets.len() {
+            panic!("number of vars is different from number of sets");
+        }
+
         // Get master set
         for set in sets {
             for n in set {
@@ -282,8 +286,16 @@ fn main() {
     // [0, 1, 2, 3, 4, 5]
     let sets = vec![
         vec![0, 1, 2],
+        vec![3, 4, 5]
     ];
-    let result = eval_set("A!", &sets);
+    let result = eval_set("AB&!", &sets);
     println!("{:?}", result);
     // []
+    // let sets = vec![
+    //     vec![0, 1, 2],
+    //     vec![2, 3, 5],
+    //     vec![0, 5, 1],
+    // ];
+    // let result = eval_set("A!B&B!A&|", &sets); // <-- invalid, diff number
+    // println!("{:?}", result);
 }
